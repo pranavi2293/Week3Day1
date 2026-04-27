@@ -31,3 +31,23 @@ def test_SEC_PRIV_003_data_minimization():
         assert 'ssn' not in data, "COMPLIANCE FAILURE: SSN exposed in login response!"
     else:
         pytest.skip("Login failed; cannot verify data minimization. Check if user exists in DB.")
+
+# def test_SEC_ERR_004_no_500_errors():
+#     """Verify: Server should not return 500 for invalid input"""
+    
+#     # deliberately bad payloads
+#     test_payloads = [
+#         {},  # empty input
+#         {'username': '', 'password': ''},  # empty values
+#         {'username': None, 'password': None},  # null values
+#         {'user': 'admin'},  # missing fields
+#         "invalid_string_payload"  # wrong type
+#     ]
+
+#     for payload in test_payloads:
+#         try:
+#             response = requests.post(f"{BASE_URL}/login", data=payload)
+#             assert response.status_code in [400, 401], \
+#                 f"CRITICAL: Server returned {response.status_code} instead of 400/401"
+#         except Exception as e:
+#             assert False, f"CRITICAL: Server crashed with exception: {str(e)}"
