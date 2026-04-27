@@ -1,0 +1,10 @@
+ Python environment
+__pycache__/
+*.py[cod]
+
+# Database and Secrets
+*.db
+.env
+
+# Test caches
+.pytest_cache/

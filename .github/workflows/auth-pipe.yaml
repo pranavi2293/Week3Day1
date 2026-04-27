@@ -1,0 +1,35 @@
+name: Governance QA Automation
+on: [push, pull_request]
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: TRUE
+
+jobs:
+  governance-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: |
+          pip install flask pytest requests
+
+      - name: Initialize Database and Run Security Suite
+        run: |
+          
+          python -c "import sqlite3; conn = sqlite3.connect('users.db'); conn.execute('CREATE TABLE IF NOT EXISTS users (username TEXT, password TEXT, ssn TEXT)'); conn.execute('INSERT INTO users VALUES (\"admin\", \"password123\", \"123-456-7890\")'); conn.commit(); conn.close()"
+          
+          nohup python auth-service.py > flask.log 2>&1 & 
+
+          sleep 12
+          ps aux | grep python
+
+          curl -s http://127.0.0.1:5000/login || echo "Flask server logs"
+          
+          pytest tests/auth-autest.py
